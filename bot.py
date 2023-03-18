@@ -1,6 +1,7 @@
 # bot.py
 import os
 import random
+from parse_message import parse_message
 
 import discord
 from dotenv import load_dotenv
@@ -20,22 +21,12 @@ async def on_error(event, *args, **kwargs):
 
 @client.event
 async def on_message(message):
-    print('got message')
-    if message.author == client.user:
+
+    if message.author == client.user or message.channel.name != 'rolls':
         return
-    print('did not return')
-    brooklyn_99_quotes = [
-        'I\'m the human form of the 💯 emoji.',
-        'Bingpot!',
-        (
-            'Cool. Cool cool cool cool cool cool cool, '
-            'no doubt no doubt no doubt no doubt.'
-        ),
-    ]
-    print(message.content)
-    if message.content == '99!':
-        response = random.choice(brooklyn_99_quotes)
-        print(response)
-        await message.channel.send(response)
+    
+    result = '"'+message.content+'" for '+str(message.author.mention)+':\n'+parse_message(message.content)
+
+    await message.channel.send(result)
 
 client.run(TOKEN)
